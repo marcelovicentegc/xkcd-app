@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/widgets/button.dart';
+import 'package:xkcd/widgets/navigation.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -92,42 +93,7 @@ class _HomePageState extends State<HomePage> {
                             "${snapshot.data.title}",
                             style: Theme.of(context).textTheme.headline6,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Button(
-                                onPressed: () {
-                                  print('Navigate to first one');
-                                },
-                                label: "|<",
-                              ),
-                              Button(
-                                onPressed: () {
-                                  print('Navigate to previous one');
-                                },
-                                label: "< Prev",
-                              ),
-                              Button(
-                                onPressed: () {
-                                  print('Navigate to random one');
-                                },
-                                label: "Random",
-                              ),
-                              Button(
-                                onPressed: () {
-                                  print('Navigate to next one');
-                                },
-                                label: "Next >",
-                              ),
-                              Button(
-                                onPressed: () {
-                                  print('Navigate to last one');
-                                },
-                                label: ">|",
-                              )
-                            ],
-                          ),
+                          Navigation(),
                           Material(
                             child: InkWell(
                               onTap: () {
@@ -140,6 +106,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
+                          Navigation(),
                         ],
                       );
                     } else if (snapshot.hasError) {
