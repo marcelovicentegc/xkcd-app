@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/xkcd.dart';
+import 'package:xkcd/widgets/button.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -58,13 +59,57 @@ class _HomePageState extends State<HomePage> {
                   future: latestComic,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Image.network(snapshot.data.img);
+                      return Column(
+                        children: <Widget>[
+                          Text(
+                            "${snapshot.data.title}",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Button(
+                                onPressed: () {
+                                  print('Navigate to first one');
+                                },
+                                label: "|<",
+                              ),
+                              Button(
+                                onPressed: () {
+                                  print('Navigate to previous one');
+                                },
+                                label: "< Prev",
+                              ),
+                              Button(
+                                onPressed: () {
+                                  print('Navigate to random one');
+                                },
+                                label: "Random",
+                              ),
+                              Button(
+                                onPressed: () {
+                                  print('Navigate to next one');
+                                },
+                                label: "Next >",
+                              ),
+                              Button(
+                                onPressed: () {
+                                  print('Navigate to last one');
+                                },
+                                label: ">|",
+                              )
+                            ],
+                          ),
+                          Image.network(snapshot.data.img),
+                        ],
+                      );
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-
-                    // By default, show a loading spinner.
-                    return CircularProgressIndicator();
+                    return Container(
+                        padding: EdgeInsets.all(48.0),
+                        child: CircularProgressIndicator());
                   },
                 ),
               )
