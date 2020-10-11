@@ -21,6 +21,33 @@ class _HomePageState extends State<HomePage> {
     latestComic = fetchLatestComic();
   }
 
+  void _displayAltContent({title: String, alt: String}) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return new AlertDialog(
+          title: new Text(title),
+          content: new SingleChildScrollView(
+            child: new ListBody(
+              children: [
+                new Text(alt),
+              ],
+            ),
+          ),
+          actions: [
+            new FlatButton(
+              child: new Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +128,18 @@ class _HomePageState extends State<HomePage> {
                               )
                             ],
                           ),
-                          Image.network(snapshot.data.img),
+                          Material(
+                            child: InkWell(
+                              onTap: () {
+                                _displayAltContent(
+                                    title: snapshot.data.title,
+                                    alt: snapshot.data.alt);
+                              },
+                              child: Container(
+                                child: Image.network(snapshot.data.img),
+                              ),
+                            ),
+                          ),
                         ],
                       );
                     } else if (snapshot.hasError) {
