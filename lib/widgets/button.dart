@@ -9,22 +9,25 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RawMaterialButton(
-      fillColor: Colors.blueGrey,
-      splashColor: Colors.white,
-      constraints: const BoxConstraints(minWidth: 30.0, minHeight: 36.0),
-      child: Padding(
-        padding: EdgeInsets.all(4.0),
-        child: Text(
-          label,
-          maxLines: 1,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    return Padding(
+      padding: EdgeInsets.all(4.0),
+      child: RawMaterialButton(
+        fillColor: Colors.blueGrey,
+        splashColor: Colors.white,
+        constraints: const BoxConstraints(minWidth: 30.0, minHeight: 36.0),
+        child: Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(
+            label,
+            maxLines: 1,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
         ),
+        onPressed: onPressed,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+            side: BorderSide(color: Colors.black)),
       ),
-      onPressed: onPressed,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
-          side: BorderSide(color: Colors.black)),
     );
   }
 }
