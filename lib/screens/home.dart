@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<Comic> currentComic;
-  List<Comic> _randomComics = List<Comic>();
+  Future<List<Widget>> randomComics;
   int randomId = 0;
   XkcdClient client;
 
@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     client = new XkcdClient();
     currentComic = client.fetchLatestComic();
+    randomComics = renderRandomComics();
   }
 
   void handleOnPressedFirst() {
@@ -74,17 +75,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<List<Widget>> _renderRandomComics() async {
+  Future<List<Widget>> renderRandomComics() async {
     Utils utils = new Utils();
+    List<Comic> comics = List<Comic>();
     Comic latestComic = await client.fetchLatestComic();
 
     for (int i = 0; i < 4; i++) {
       int randomId = utils.generateRandomNumber(latestComicId: latestComic.id);
       Comic comic = await client.fetchComic(id: randomId);
-      _randomComics.add(comic);
+      comics.add(comic);
     }
 
-    List<Widget> comics = _randomComics?.map(
+    List<Widget> randomComicsWidgets = comics?.map(
           (randomComic) {
             return Container(
               padding: EdgeInsets.all(8.0),
@@ -103,7 +105,7 @@ class _HomePageState extends State<HomePage> {
         )?.toList() ??
         [];
 
-    return comics;
+    return randomComicsWidgets;
   }
 
   void _displayAltContent({title: String, alt: String}) {
@@ -236,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   padding: EdgeInsets.only(top: 48.0),
                   child: FutureBuilder<List<Widget>>(
-                    future: _renderRandomComics(),
+                    future: randomComics,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasError) {
