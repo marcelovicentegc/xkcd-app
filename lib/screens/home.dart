@@ -259,6 +259,13 @@ class _HomePageState extends State<HomePage> {
                         }
 
                         return Column(children: [
+                          Container(
+                            padding: EdgeInsets.only(bottom: 8.0),
+                            child: Text(
+                              'Some random comics',
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ),
                           Row(children: snapshot.data.sublist(0, 2)),
                           Row(children: snapshot.data.sublist(2, 4)),
                         ]);
