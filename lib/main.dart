@@ -15,7 +15,7 @@ class XkcdApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(title: 'xkcd navigator'),
+      home: HomePage(title: 'home'),
     );
   }
 }
