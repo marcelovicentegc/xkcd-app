@@ -3,6 +3,19 @@ import 'package:flutter/widgets.dart';
 import 'package:xkcd/widgets/button.dart';
 
 class Navigation extends StatelessWidget {
+  Navigation(
+      {@required this.onPressedNext,
+      @required this.onPressedPrevious,
+      @required this.onPressedRandom,
+      @required this.onPressedLast,
+      @required this.onPressedFirst});
+
+  final GestureTapCallback onPressedNext;
+  final GestureTapCallback onPressedPrevious;
+  final GestureTapCallback onPressedRandom;
+  final GestureTapCallback onPressedLast;
+  final GestureTapCallback onPressedFirst;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -11,31 +24,31 @@ class Navigation extends StatelessWidget {
       children: <Widget>[
         Button(
           onPressed: () {
-            print('Navigate to first one');
+            onPressedFirst();
           },
           label: "|<",
         ),
         Button(
           onPressed: () {
-            print('Navigate to previous one');
+            onPressedPrevious();
           },
           label: "< Prev",
         ),
         Button(
           onPressed: () {
-            print('Navigate to random one');
+            onPressedRandom();
           },
           label: "Random",
         ),
         Button(
           onPressed: () {
-            print('Navigate to next one');
+            onPressedNext();
           },
           label: "Next >",
         ),
         Button(
           onPressed: () {
-            print('Navigate to last one');
+            onPressedLast();
           },
           label: ">|",
         )

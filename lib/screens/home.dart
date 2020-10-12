@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<Comic> latestComic;
+  Future<Comic> currentComic;
   List<Comic> _randomComics = List<Comic>();
   int randomId = 0;
   XkcdClient client;
@@ -23,7 +23,55 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     client = new XkcdClient();
-    latestComic = client.fetchLatestComic();
+    currentComic = client.fetchLatestComic();
+  }
+
+  void handleOnPressedFirst() {
+    setState(() {
+      currentComic = client.fetchComic(id: 1);
+    });
+  }
+
+  void handleOnPressedLast() {
+    setState(() {
+      currentComic = client.fetchLatestComic();
+    });
+  }
+
+  void handleOnPressedNext() async {
+    Comic latestComic = await client.fetchLatestComic();
+    Comic comic = await currentComic;
+
+    if (latestComic.id == comic.id) {
+      return;
+    }
+
+    setState(() {
+      currentComic = client.fetchComic(id: comic.id + 1);
+    });
+  }
+
+  void handleOnPressedPrevious() async {
+    Comic comic = await currentComic;
+
+    if (comic.id == 1) {
+      return;
+    }
+
+    setState(() {
+      currentComic = client.fetchComic(id: comic.id - 1);
+    });
+  }
+
+  void handleOnPressedRandom() async {
+    Utils utils = new Utils();
+    Comic latestComic = await client.fetchLatestComic();
+
+    int randomId = utils.generateRandomNumber(latestComicId: latestComic.id);
+
+    setState(() {
+      currentComic = client.fetchComic(id: randomId);
+    });
   }
 
   Future<List<Widget>> _renderRandomComics() async {
@@ -119,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   margin: EdgeInsets.only(top: 16.0),
                   child: FutureBuilder<Comic>(
-                    future: latestComic,
+                    future: currentComic,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Column(
@@ -128,7 +176,23 @@ class _HomePageState extends State<HomePage> {
                               "${snapshot.data.title}",
                               style: Theme.of(context).textTheme.headline6,
                             ),
-                            Navigation(),
+                            Navigation(
+                              onPressedFirst: () {
+                                handleOnPressedFirst();
+                              },
+                              onPressedLast: () {
+                                handleOnPressedLast();
+                              },
+                              onPressedNext: () {
+                                handleOnPressedNext();
+                              },
+                              onPressedPrevious: () {
+                                handleOnPressedPrevious();
+                              },
+                              onPressedRandom: () {
+                                handleOnPressedRandom();
+                              },
+                            ),
                             Material(
                               child: InkWell(
                                 onTap: () {
@@ -141,7 +205,23 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            Navigation(),
+                            Navigation(
+                              onPressedFirst: () {
+                                handleOnPressedFirst();
+                              },
+                              onPressedLast: () {
+                                handleOnPressedLast();
+                              },
+                              onPressedNext: () {
+                                handleOnPressedNext();
+                              },
+                              onPressedPrevious: () {
+                                handleOnPressedPrevious();
+                              },
+                              onPressedRandom: () {
+                                handleOnPressedRandom();
+                              },
+                            ),
                           ],
                         );
                       } else if (snapshot.hasError) {
