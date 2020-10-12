@@ -75,6 +75,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void handleOnTapRandomComic({id: int}) {
+    setState(() {
+      currentComic = client.fetchComic(id: id);
+    });
+  }
+
   Future<List<Widget>> renderRandomComics() async {
     Utils utils = new Utils();
     List<Comic> comics = List<Comic>();
@@ -88,16 +94,23 @@ class _HomePageState extends State<HomePage> {
 
     List<Widget> randomComicsWidgets = comics?.map(
           (randomComic) {
-            return Container(
-              padding: EdgeInsets.all(8.0),
+            return GestureDetector(
+              onTap: () {
+                handleOnTapRandomComic(id: randomComic.id);
+              },
               child: Container(
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.black)),
-                child: Image.network(
-                  randomComic.img,
-                  width: (MediaQuery.of(context).size.width / 2) - 36,
-                  height: 80,
-                  fit: BoxFit.cover,
+                padding: EdgeInsets.all(8.0),
+                child: Container(
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.black)),
+                  child: Container(
+                    child: Image.network(
+                      randomComic.img,
+                      width: (MediaQuery.of(context).size.width / 2) - 36,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
             );
