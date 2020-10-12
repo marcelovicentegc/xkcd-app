@@ -249,9 +249,37 @@ class _HomePageState extends State<HomePage> {
                       if (snapshot.hasData) {
                         return Column(
                           children: <Widget>[
-                            Text(
-                              "${snapshot.data.title}",
-                              style: Theme.of(context).textTheme.headline6,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  "${snapshot.data.title}",
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
+                                FutureBuilder<bool>(
+                                  future: _isSavedOnFavorites(
+                                      comicId: snapshot.data.id),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      if (snapshot.hasError) {
+                                        return Text("${snapshot.error}");
+                                      }
+
+                                      if (snapshot.data) {
+                                        return Icon(Icons.star,
+                                            color: Colors.yellow.shade900);
+                                      } else {
+                                        return Icon(Icons.star,
+                                            color: Colors.grey);
+                                      }
+                                    } else {
+                                      return Icon(Icons.star,
+                                          color: Colors.grey);
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
                             Navigation(
                               onPressedFirst: () {
@@ -282,44 +310,11 @@ class _HomePageState extends State<HomePage> {
                                       title: snapshot.data.title,
                                       alt: snapshot.data.alt);
                                 },
-                                child: Stack(
-                                  children: <Widget>[
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: Image.network(
-                                        snapshot.data.img,
-                                      ),
-                                    ),
-                                    FutureBuilder<bool>(
-                                      future: _isSavedOnFavorites(
-                                          comicId: snapshot.data.id),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          if (snapshot.hasError) {
-                                            return Text("${snapshot.error}");
-                                          }
-
-                                          if (snapshot.data) {
-                                            return Positioned(
-                                              top: -14,
-                                              right: -12,
-                                              child: Icon(Icons.star,
-                                                  color:
-                                                      Colors.yellow.shade900),
-                                            );
-                                          } else {
-                                            return Container(
-                                                width: 0.0, height: 0.0);
-                                          }
-                                        } else {
-                                          return Container(
-                                              width: 0.0, height: 0.0);
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                  overflow: Overflow.visible,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Image.network(
+                                    snapshot.data.img,
+                                  ),
                                 ),
                               ),
                             ),
