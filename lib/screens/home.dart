@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/xkcd.dart';
@@ -39,9 +41,16 @@ class _HomePageState extends State<HomePage> {
     List<Widget> comics = _randomComics?.map(
           (randomComic) {
             return Container(
-              child: Image.network(
-                randomComic.img,
-                width: MediaQuery.of(context).size.width / 3,
+              padding: EdgeInsets.all(8.0),
+              child: Container(
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.black)),
+                child: Image.network(
+                  randomComic.img,
+                  width: (MediaQuery.of(context).size.width / 2) - 36,
+                  height: 80,
+                  fit: BoxFit.cover,
+                ),
               ),
             );
           },
@@ -149,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(48.0),
+                  padding: EdgeInsets.only(top: 48.0),
                   child: FutureBuilder<List<Widget>>(
                     future: _renderRandomComics(),
                     builder: (context, snapshot) {
