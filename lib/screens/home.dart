@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
     List<Comic> comics = List<Comic>();
     Comic latestComic = await client.fetchLatestComic();
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 6; i++) {
       int randomId = utils.generateRandomNumber(latestComicId: latestComic.id);
       Comic comic = await client.fetchComic(id: randomId);
       comics.add(comic);
@@ -366,6 +366,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           Row(children: snapshot.data.sublist(0, 2)),
                           Row(children: snapshot.data.sublist(2, 4)),
+                          Row(children: snapshot.data.sublist(4, 6)),
                         ]);
                       } else {
                         return CircularProgressIndicator();
