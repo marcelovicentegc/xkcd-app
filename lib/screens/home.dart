@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/utils/random.dart';
 import 'package:xkcd/widgets/navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -27,19 +28,19 @@ class _HomePageState extends State<HomePage> {
     randomComics = renderRandomComics();
   }
 
-  void handleOnPressedFirst() {
+  void _handleOnPressedFirst() {
     setState(() {
       currentComic = client.fetchComic(id: 1);
     });
   }
 
-  void handleOnPressedLast() {
+  void _handleOnPressedLast() {
     setState(() {
       currentComic = client.fetchLatestComic();
     });
   }
 
-  void handleOnPressedNext() async {
+  void _handleOnPressedNext() async {
     Comic latestComic = await client.fetchLatestComic();
     Comic comic = await currentComic;
 
@@ -52,7 +53,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void handleOnPressedPrevious() async {
+  void _handleOnPressedPrevious() async {
     Comic comic = await currentComic;
 
     if (comic.id == 1) {
@@ -64,7 +65,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void handleOnPressedRandom() async {
+  void _handleOnPressedRandom() async {
     Utils utils = new Utils();
     Comic latestComic = await client.fetchLatestComic();
 
@@ -148,6 +149,43 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<List<String>> _readFromFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'favorites';
+    final value = prefs.getStringList(key) ?? [];
+    return value;
+  }
+
+  void _saveToFavorites({id: int}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'favorites';
+    final value = prefs.getStringList(key) ?? [];
+    value.add(id.toString());
+    prefs.setStringList(key, value);
+  }
+
+  void _removeFromFavorites({id: int}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'favorites';
+    final value = prefs.getStringList(key) ?? [];
+    value.remove(id.toString());
+    prefs.setStringList(key, value);
+  }
+
+  Future<SnackBar> _handleOnDoubleTap({comicId: int}) async {
+    SnackBar snackBar;
+    final ids = await _readFromFavorites();
+    if (ids.any((id) => id == comicId.toString())) {
+      _removeFromFavorites(id: comicId);
+      snackBar = SnackBar(content: Text("Removed from favorites"));
+    } else {
+      snackBar = SnackBar(content: Text("Added on favorites"));
+      _saveToFavorites(id: comicId);
+    }
+
+    return snackBar;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -193,23 +231,28 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Navigation(
                               onPressedFirst: () {
-                                handleOnPressedFirst();
+                                _handleOnPressedFirst();
                               },
                               onPressedLast: () {
-                                handleOnPressedLast();
+                                _handleOnPressedLast();
                               },
                               onPressedNext: () {
-                                handleOnPressedNext();
+                                _handleOnPressedNext();
                               },
                               onPressedPrevious: () {
-                                handleOnPressedPrevious();
+                                _handleOnPressedPrevious();
                               },
                               onPressedRandom: () {
-                                handleOnPressedRandom();
+                                _handleOnPressedRandom();
                               },
                             ),
                             Material(
                               child: InkWell(
+                                onDoubleTap: () async {
+                                  Scaffold.of(context).showSnackBar(
+                                      await _handleOnDoubleTap(
+                                          comicId: snapshot.data.id));
+                                },
                                 onTap: () {
                                   _displayAltContent(
                                       title: snapshot.data.title,
@@ -222,19 +265,19 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Navigation(
                               onPressedFirst: () {
-                                handleOnPressedFirst();
+                                _handleOnPressedFirst();
                               },
                               onPressedLast: () {
-                                handleOnPressedLast();
+                                _handleOnPressedLast();
                               },
                               onPressedNext: () {
-                                handleOnPressedNext();
+                                _handleOnPressedNext();
                               },
                               onPressedPrevious: () {
-                                handleOnPressedPrevious();
+                                _handleOnPressedPrevious();
                               },
                               onPressedRandom: () {
-                                handleOnPressedRandom();
+                                _handleOnPressedRandom();
                               },
                             ),
                           ],
