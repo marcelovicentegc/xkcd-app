@@ -172,10 +172,15 @@ class _HomePageState extends State<HomePage> {
     prefs.setStringList(key, value);
   }
 
+  Future<bool> _isSavedOnFavorites({comicId: int}) async {
+    final ids = await _readFromFavorites();
+    return ids.any((id) => id == comicId.toString());
+  }
+
   Future<SnackBar> _handleOnDoubleTap({comicId: int}) async {
     SnackBar snackBar;
-    final ids = await _readFromFavorites();
-    if (ids.any((id) => id == comicId.toString())) {
+    bool isSaved = await _isSavedOnFavorites(comicId: comicId);
+    if (isSaved) {
       _removeFromFavorites(id: comicId);
       snackBar = SnackBar(
           duration: const Duration(seconds: 1),
@@ -262,8 +267,44 @@ class _HomePageState extends State<HomePage> {
                                       title: snapshot.data.title,
                                       alt: snapshot.data.alt);
                                 },
-                                child: Container(
-                                  child: Image.network(snapshot.data.img),
+                                child: Stack(
+                                  children: <Widget>[
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: Image.network(
+                                        snapshot.data.img,
+                                      ),
+                                    ),
+                                    FutureBuilder<bool>(
+                                      future: _isSavedOnFavorites(
+                                          comicId: snapshot.data.id),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          if (snapshot.hasError) {
+                                            return Text("${snapshot.error}");
+                                          }
+
+                                          if (snapshot.data) {
+                                            return Positioned(
+                                              top: -14,
+                                              right: -12,
+                                              child: Icon(Icons.star,
+                                                  color:
+                                                      Colors.yellow.shade900),
+                                            );
+                                          } else {
+                                            return Container(
+                                                width: 0.0, height: 0.0);
+                                          }
+                                        } else {
+                                          return Container(
+                                              width: 0.0, height: 0.0);
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                  overflow: Overflow.visible,
                                 ),
                               ),
                             ),
