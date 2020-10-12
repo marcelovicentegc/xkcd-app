@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/xkcd.dart';
+import 'package:xkcd/screens/favorites.dart';
 import 'package:xkcd/utils/random.dart';
 import 'package:xkcd/widgets/navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -200,6 +201,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.star,
+              color: Colors.yellow.shade900,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SecondRoute()),
+              );
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
