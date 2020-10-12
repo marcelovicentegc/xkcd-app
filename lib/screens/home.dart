@@ -177,9 +177,13 @@ class _HomePageState extends State<HomePage> {
     final ids = await _readFromFavorites();
     if (ids.any((id) => id == comicId.toString())) {
       _removeFromFavorites(id: comicId);
-      snackBar = SnackBar(content: Text("Removed from favorites"));
+      snackBar = SnackBar(
+          duration: const Duration(seconds: 1),
+          content: Text("Removed from favorites"));
     } else {
-      snackBar = SnackBar(content: Text("Added on favorites"));
+      snackBar = SnackBar(
+          duration: const Duration(seconds: 1),
+          content: Text("Added on favorites"));
       _saveToFavorites(id: comicId);
     }
 
