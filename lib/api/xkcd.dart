@@ -43,16 +43,24 @@ class Comic {
   }
 }
 
-Future<Comic> fetchLatestComic() async {
-  final response = await http.get('https://xkcd.com/info.0.json');
+class XkcdClient {
+  Future<Comic> fetchLatestComic() async {
+    final response = await http.get('https://xkcd.com/info.0.json');
 
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return Comic.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load comic');
+    if (response.statusCode == 200) {
+      return Comic.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load latest comic');
+    }
+  }
+
+  Future<Comic> fetchComic({id: int}) async {
+    final response = await http.get('https://xkcd.com/$id/info.0.json');
+
+    if (response.statusCode == 200) {
+      return Comic.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load comic');
+    }
   }
 }
