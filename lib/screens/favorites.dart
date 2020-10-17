@@ -16,7 +16,6 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  List<String> _favoriteComicsIds = new List<String>();
   List<Comic> _favoriteComics = List<Comic>();
   bool _displayComic = false;
   Comic _currentComic;
@@ -42,7 +41,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
     comics = await Future.wait(ids.map((id) => _client.fetchComic(id: id)));
 
     setState(() {
-      _favoriteComicsIds = ids;
       _favoriteComics = comics;
       _isLoading = false;
     });
