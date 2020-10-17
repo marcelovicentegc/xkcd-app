@@ -8,6 +8,7 @@ import 'package:xkcd/utils/random.dart';
 import 'package:xkcd/widgets/navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
+import 'package:xkcd/widgets/zoom_overlay.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -21,9 +22,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<Comic> currentComic;
   Future<List<Widget>> randomComics;
-  bool _isCurrentComicOnFavorites = false;
-  double _scale = 1.0;
-  double _previousScale = 1.0;
+  bool _isCurrentComicOnFavorites;
+  double _scale;
+  double _previousScale;
+  Offset _offset;
+  Offset _previousOffset;
   int randomId = 0;
   XkcdClient client;
   Db db;
@@ -33,6 +36,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     client = new XkcdClient();
     db = new Db();
+    _isCurrentComicOnFavorites = false;
+    _scale = 1.0;
+    _previousScale = 1.0;
+    _offset = Offset.zero;
     currentComic = client.fetchLatestComic();
     randomComics = _renderRandomComics();
   }
@@ -315,28 +322,11 @@ class _HomePageState extends State<HomePage> {
                                       alt: snapshot.data.alt);
                                 },
                                 child: Container(
+                                  // height: ,
                                   alignment: Alignment.center,
-                                  child: GestureDetector(
-                                    onScaleUpdate:
-                                        (ScaleUpdateDetails details) {
-                                      setState(() {
-                                        _scale = _previousScale + details.scale;
-                                      });
-                                    },
-                                    onScaleEnd: (ScaleEndDetails details) {
-                                      setState(() {
-                                        _previousScale = 1.0;
-                                        _scale = 1.0;
-                                      });
-                                    },
-                                    child: Transform(
-                                      alignment: FractionalOffset.center,
-                                      transform: Matrix4.diagonal3(
-                                          Vector3(_scale, _scale, _scale)),
-                                      child: Image.network(
-                                        snapshot.data.img,
-                                      ),
-                                    ),
+                                  child: ZoomOverlay(
+                                    twoTouchOnly: true,
+                                    child: Image.network(snapshot.data.img),
                                   ),
                                 ),
                               ),

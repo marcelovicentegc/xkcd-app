@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/db.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/utils/consts.dart';
+import 'package:xkcd/widgets/zoom_overlay.dart';
 
 class FavoritesPage extends StatefulWidget {
   FavoritesPage({Key key, this.title}) : super(key: key);
@@ -106,8 +107,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                 favoriteComic.id)
                                         ? Container(
                                             alignment: Alignment.center,
-                                            child:
-                                                Image.network(currentComic.img),
+                                            child: ZoomOverlay(
+                                              twoTouchOnly: true,
+                                              child: Image.network(
+                                                  currentComic.img),
+                                            ),
                                           )
                                         : Container()
                                   ],
