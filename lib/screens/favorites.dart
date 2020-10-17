@@ -51,17 +51,21 @@ class _FavoritesPageState extends State<FavoritesPage> {
         title: Text(FAVORITES),
       ),
       body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Column(
-              children: isLoading
-                  ? [CircularProgressIndicator()]
-                  : favoriteComics
-                      .map((favoriteComic) =>
-                          Container(child: Text(favoriteComic.title)))
-                      .toList()),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Align(
+            alignment: Alignment.center,
+            child: Column(
+                children: isLoading
+                    ? [CircularProgressIndicator()]
+                    : favoriteComics
+                        .map((favoriteComic) => Container(
+                                child: Text(
+                              favoriteComic.title,
+                              style: Theme.of(context).textTheme.headline6,
+                            )))
+                        .toList()),
+          ),
         ),
       ),
     );

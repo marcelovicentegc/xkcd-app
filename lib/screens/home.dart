@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(
               Icons.star,
-              color: Colors.yellow.shade900,
+              color: Colors.white,
             ),
             onPressed: () {
               Navigator.push(
