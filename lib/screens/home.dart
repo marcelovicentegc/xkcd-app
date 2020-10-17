@@ -19,6 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Future<Comic> currentComic;
   Future<List<Widget>> randomComics;
+  bool _isCurrentComicOnFavorites = false;
   int randomId = 0;
   XkcdClient client;
 
@@ -27,24 +28,37 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     client = new XkcdClient();
     currentComic = client.fetchLatestComic();
+    _isCurrentComicOnFavorites = false;
     randomComics = _renderRandomComics();
   }
 
-  void _handleOnPressedFirst() {
+  void _checkIfCurrentComicIsOnFavorites() async {
+    Comic comic = await currentComic;
+    bool isSaved = await _isSavedOnFavorites(comicId: comic.id);
     setState(() {
-      currentComic = client.fetchComic(id: 1);
+      _isCurrentComicOnFavorites = isSaved;
     });
   }
 
-  void _handleOnPressedLast() {
+  void _handleOnPressedFirst() async {
+    setState(() {
+      currentComic = client.fetchComic(id: 1);
+    });
+
+    _checkIfCurrentComicIsOnFavorites();
+  }
+
+  void _handleOnPressedLast() async {
     setState(() {
       currentComic = client.fetchLatestComic();
     });
+
+    _checkIfCurrentComicIsOnFavorites();
   }
 
   void _handleOnPressedNext() async {
     Comic latestComic = await client.fetchLatestComic();
-    Comic comic = await currentComic;
+    var comic = await currentComic;
 
     if (latestComic.id == comic.id) {
       return;
@@ -53,6 +67,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       currentComic = client.fetchComic(id: comic.id + 1);
     });
+
+    _checkIfCurrentComicIsOnFavorites();
   }
 
   void _handleOnPressedPrevious() async {
@@ -65,6 +81,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       currentComic = client.fetchComic(id: comic.id - 1);
     });
+
+    _checkIfCurrentComicIsOnFavorites();
   }
 
   void _handleOnPressedRandom() async {
@@ -76,12 +94,16 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       currentComic = client.fetchComic(id: randomId);
     });
+
+    _checkIfCurrentComicIsOnFavorites();
   }
 
-  void _handleOnTapRandomComic({id: int}) {
+  void _handleOnTapRandomComic({id: int}) async {
     setState(() {
       currentComic = client.fetchComic(id: id);
     });
+
+    _checkIfCurrentComicIsOnFavorites();
   }
 
   Future<List<Widget>> _renderRandomComics() async {
@@ -193,6 +215,10 @@ class _HomePageState extends State<HomePage> {
       _saveToFavorites(id: comicId);
     }
 
+    setState(() {
+      _isCurrentComicOnFavorites = !isSaved;
+    });
+
     return snackBar;
   }
 
@@ -255,29 +281,10 @@ class _HomePageState extends State<HomePage> {
                                   "${snapshot.data.title}",
                                   style: Theme.of(context).textTheme.headline6,
                                 ),
-                                FutureBuilder<bool>(
-                                  future: _isSavedOnFavorites(
-                                      comicId: snapshot.data.id),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      if (snapshot.hasError) {
-                                        return Text("${snapshot.error}");
-                                      }
-
-                                      if (snapshot.data) {
-                                        return Icon(Icons.star,
-                                            color: Colors.yellow.shade900);
-                                      } else {
-                                        return Icon(Icons.star,
-                                            color: Colors.grey);
-                                      }
-                                    } else {
-                                      return Icon(Icons.star,
-                                          color: Colors.grey);
-                                    }
-                                  },
-                                ),
+                                Icon(Icons.star,
+                                    color: _isCurrentComicOnFavorites
+                                        ? Colors.yellow.shade900
+                                        : Colors.grey),
                               ],
                             ),
                             Navigation(
