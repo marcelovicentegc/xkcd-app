@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     client = new XkcdClient();
     currentComic = client.fetchLatestComic();
-    randomComics = renderRandomComics();
+    randomComics = _renderRandomComics();
   }
 
   void _handleOnPressedFirst() {
@@ -78,13 +78,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void handleOnTapRandomComic({id: int}) {
+  void _handleOnTapRandomComic({id: int}) {
     setState(() {
       currentComic = client.fetchComic(id: id);
     });
   }
 
-  Future<List<Widget>> renderRandomComics() async {
+  Future<List<Widget>> _renderRandomComics() async {
     Utils utils = new Utils();
     List<Comic> comics = List<Comic>();
     Comic latestComic = await client.fetchLatestComic();
@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
           (randomComic) {
             return GestureDetector(
               onTap: () {
-                handleOnTapRandomComic(id: randomComic.id);
+                _handleOnTapRandomComic(id: randomComic.id);
               },
               child: Container(
                 padding: EdgeInsets.all(8.0),
