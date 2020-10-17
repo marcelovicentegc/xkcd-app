@@ -20,25 +20,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<Comic> currentComic;
-  Future<List<Widget>> randomComics;
+  Future<Comic> _currentComic;
+  Future<List<Widget>> _randomComics;
   bool _isCurrentComicOnFavorites;
-  int randomId = 0;
-  XkcdClient client;
-  Db db;
+  XkcdClient _client;
+  Db _db;
 
   @override
   void initState() {
     super.initState();
-    client = new XkcdClient();
-    db = new Db();
+    _client = new XkcdClient();
+    _db = new Db();
     _isCurrentComicOnFavorites = false;
-    currentComic = client.fetchLatestComic();
-    randomComics = _renderRandomComics();
+    _currentComic = _client.fetchLatestComic();
+    _randomComics = _renderRandomComics();
   }
 
   void _checkIfCurrentComicIsOnFavorites() async {
-    Comic comic = await currentComic;
+    Comic comic = await _currentComic;
     bool isSaved = await _isSavedOnFavorites(comicId: comic.id);
     setState(() {
       _isCurrentComicOnFavorites = isSaved;
@@ -47,7 +46,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleOnPressedFirst() async {
     setState(() {
-      currentComic = client.fetchComic(id: 1);
+      _currentComic = _client.fetchComic(id: 1);
     });
 
     _checkIfCurrentComicIsOnFavorites();
@@ -55,36 +54,36 @@ class _HomePageState extends State<HomePage> {
 
   void _handleOnPressedLast() async {
     setState(() {
-      currentComic = client.fetchLatestComic();
+      _currentComic = _client.fetchLatestComic();
     });
 
     _checkIfCurrentComicIsOnFavorites();
   }
 
   void _handleOnPressedNext() async {
-    Comic latestComic = await client.fetchLatestComic();
-    var comic = await currentComic;
+    Comic latestComic = await _client.fetchLatestComic();
+    var comic = await _currentComic;
 
     if (latestComic.id == comic.id) {
       return;
     }
 
     setState(() {
-      currentComic = client.fetchComic(id: comic.id + 1);
+      _currentComic = _client.fetchComic(id: comic.id + 1);
     });
 
     _checkIfCurrentComicIsOnFavorites();
   }
 
   void _handleOnPressedPrevious() async {
-    Comic comic = await currentComic;
+    Comic comic = await _currentComic;
 
     if (comic.id == 1) {
       return;
     }
 
     setState(() {
-      currentComic = client.fetchComic(id: comic.id - 1);
+      _currentComic = _client.fetchComic(id: comic.id - 1);
     });
 
     _checkIfCurrentComicIsOnFavorites();
@@ -92,12 +91,12 @@ class _HomePageState extends State<HomePage> {
 
   void _handleOnPressedRandom() async {
     Utils utils = new Utils();
-    Comic latestComic = await client.fetchLatestComic();
+    Comic latestComic = await _client.fetchLatestComic();
 
     int randomId = utils.generateRandomNumber(latestComicId: latestComic.id);
 
     setState(() {
-      currentComic = client.fetchComic(id: randomId);
+      _currentComic = _client.fetchComic(id: randomId);
     });
 
     _checkIfCurrentComicIsOnFavorites();
@@ -105,7 +104,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleOnTapRandomComic({id: int}) async {
     setState(() {
-      currentComic = client.fetchComic(id: id);
+      _currentComic = _client.fetchComic(id: id);
     });
 
     _checkIfCurrentComicIsOnFavorites();
@@ -114,11 +113,11 @@ class _HomePageState extends State<HomePage> {
   Future<List<Widget>> _renderRandomComics() async {
     Utils utils = new Utils();
     List<Comic> comics = List<Comic>();
-    Comic latestComic = await client.fetchLatestComic();
+    Comic latestComic = await _client.fetchLatestComic();
 
     for (int i = 0; i < 6; i++) {
       int randomId = utils.generateRandomNumber(latestComicId: latestComic.id);
-      Comic comic = await client.fetchComic(id: randomId);
+      Comic comic = await _client.fetchComic(id: randomId);
       comics.add(comic);
     }
 
@@ -160,7 +159,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<bool> _isSavedOnFavorites({comicId: int}) async {
-    final ids = await db.readFromFavorites();
+    final ids = await _db.readFromFavorites();
     return ids.any((id) => id == comicId.toString());
   }
 
@@ -168,7 +167,7 @@ class _HomePageState extends State<HomePage> {
     SnackBar snackBar;
     bool isSaved = await _isSavedOnFavorites(comicId: comicId);
     if (isSaved) {
-      db.removeFromFavorites(id: comicId);
+      _db.removeFromFavorites(id: comicId);
       snackBar = SnackBar(
           duration: const Duration(seconds: 1),
           content: Text(REMOVED_FROM_FAVS));
@@ -232,7 +231,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   margin: EdgeInsets.only(top: 16.0),
                   child: FutureBuilder<Comic>(
-                    future: currentComic,
+                    future: _currentComic,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Column(
@@ -321,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   padding: EdgeInsets.only(top: 48.0),
                   child: FutureBuilder<List<Widget>>(
-                    future: randomComics,
+                    future: _randomComics,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         if (snapshot.hasError) {
