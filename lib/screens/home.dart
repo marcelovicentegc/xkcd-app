@@ -4,11 +4,10 @@ import 'package:xkcd/api/db.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/screens/favorites.dart';
 import 'package:xkcd/utils/consts.dart';
-import 'package:xkcd/utils/display_alt_content.dart';
+import 'package:xkcd/utils/dialogs.dart';
 import 'package:xkcd/utils/random.dart';
 import 'package:xkcd/widgets/navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:xkcd/widgets/zoom_overlay.dart';
 
 class HomePage extends StatefulWidget {
@@ -167,14 +166,6 @@ class _HomePageState extends State<HomePage> {
     prefs.setStringList(key, value);
   }
 
-  void _removeFromFavorites({id: int}) async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = FAVORITES;
-    final value = prefs.getStringList(key) ?? [];
-    value.remove(id.toString());
-    prefs.setStringList(key, value);
-  }
-
   Future<bool> _isSavedOnFavorites({comicId: int}) async {
     final ids = await db.readFromFavorites();
     return ids.any((id) => id == comicId.toString());
@@ -184,7 +175,7 @@ class _HomePageState extends State<HomePage> {
     SnackBar snackBar;
     bool isSaved = await _isSavedOnFavorites(comicId: comicId);
     if (isSaved) {
-      _removeFromFavorites(id: comicId);
+      db.removeFromFavorites(id: comicId);
       snackBar = SnackBar(
           duration: const Duration(seconds: 1),
           content: Text(REMOVED_FROM_FAVS));

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/db.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/utils/consts.dart';
-import 'package:xkcd/utils/display_alt_content.dart';
+import 'package:xkcd/utils/dialogs.dart';
 import 'package:xkcd/widgets/zoom_overlay.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -62,6 +62,11 @@ class _FavoritesPageState extends State<FavoritesPage> {
     }
   }
 
+  void _handleOnPressedOk({id: String}) async {
+    db.removeFromFavorites(id: id);
+    _getFavorites();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,19 +94,37 @@ class _FavoritesPageState extends State<FavoritesPage> {
                               (favoriteComic) => Container(
                                 child: Column(
                                   children: [
-                                    SizedBox(
-                                      width: double.infinity,
-                                      child: FlatButton(
-                                        padding: EdgeInsets.all(8.0),
-                                        onPressed: () => handleOnPressed(
-                                            comitToDisplay: favoriteComic),
-                                        child: Text(
-                                          favoriteComic.title,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6,
+                                    Row(
+                                      children: [
+                                        FlatButton(
+                                          padding: EdgeInsets.all(8.0),
+                                          onPressed: () => handleOnPressed(
+                                              comitToDisplay: favoriteComic),
+                                          child: Text(
+                                            favoriteComic.title,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6,
+                                          ),
                                         ),
-                                      ),
+                                        IconButton(
+                                          onPressed: (() {
+                                            displayConfirmationModal(
+                                                ctx: context,
+                                                title: "Remove from favorites",
+                                                content:
+                                                    "Are you sure you want to remove this comic from favorites?",
+                                                onPressedOk: () {
+                                                  _handleOnPressedOk(
+                                                      id: favoriteComic.id);
+                                                });
+                                          }),
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     displayComic &&
                                             (currentComic.id ==
