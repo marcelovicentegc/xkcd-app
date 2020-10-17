@@ -59,11 +59,21 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 children: isLoading
                     ? [CircularProgressIndicator()]
                     : favoriteComics
-                        .map((favoriteComic) => Container(
+                        .map(
+                          (favoriteComic) => Container(
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: FlatButton(
+                                padding: EdgeInsets.all(8.0),
+                                onPressed: () => {print("PRESSED")},
                                 child: Text(
-                              favoriteComic.title,
-                              style: Theme.of(context).textTheme.headline6,
-                            )))
+                                  favoriteComic.title,
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
                         .toList()),
           ),
         ),
