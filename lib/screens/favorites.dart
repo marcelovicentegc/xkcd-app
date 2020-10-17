@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/db.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/utils/consts.dart';
+import 'package:xkcd/utils/display_alt_content.dart';
 import 'package:xkcd/widgets/zoom_overlay.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -107,10 +108,24 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                 favoriteComic.id)
                                         ? Container(
                                             alignment: Alignment.center,
-                                            child: ZoomOverlay(
-                                              twoTouchOnly: true,
-                                              child: Image.network(
-                                                  currentComic.img),
+                                            child: Material(
+                                              child: InkWell(
+                                                onTap: () {
+                                                  displayAltContent(
+                                                      ctx: context,
+                                                      title: currentComic.title,
+                                                      alt: currentComic.alt);
+                                                },
+                                                child: Container(
+                                                  // height: ,
+                                                  alignment: Alignment.center,
+                                                  child: ZoomOverlay(
+                                                    twoTouchOnly: true,
+                                                    child: Image.network(
+                                                        currentComic.img),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           )
                                         : Container()

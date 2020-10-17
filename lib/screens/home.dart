@@ -4,6 +4,7 @@ import 'package:xkcd/api/db.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/screens/favorites.dart';
 import 'package:xkcd/utils/consts.dart';
+import 'package:xkcd/utils/display_alt_content.dart';
 import 'package:xkcd/utils/random.dart';
 import 'package:xkcd/widgets/navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -158,33 +159,6 @@ class _HomePageState extends State<HomePage> {
     return randomComicsWidgets;
   }
 
-  void _displayAltContent({title: String, alt: String}) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text(title),
-          content: new SingleChildScrollView(
-            child: new ListBody(
-              children: [
-                new Text(alt),
-              ],
-            ),
-          ),
-          actions: [
-            new FlatButton(
-              child: new Text(CLOSE),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _saveToFavorites({id: int}) async {
     final prefs = await SharedPreferences.getInstance();
     final key = FAVORITES;
@@ -317,7 +291,8 @@ class _HomePageState extends State<HomePage> {
                                           comicId: snapshot.data.id));
                                 },
                                 onTap: () {
-                                  _displayAltContent(
+                                  displayAltContent(
+                                      ctx: context,
                                       title: snapshot.data.title,
                                       alt: snapshot.data.alt);
                                 },
