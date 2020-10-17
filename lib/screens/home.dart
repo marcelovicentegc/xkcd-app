@@ -326,6 +326,7 @@ class _HomePageState extends State<HomePage> {
                                     onScaleEnd: (ScaleEndDetails details) {
                                       setState(() {
                                         _previousScale = 1.0;
+                                        _scale = 1.0;
                                       });
                                     },
                                     child: Transform(
