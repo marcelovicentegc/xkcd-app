@@ -23,10 +23,6 @@ class _HomePageState extends State<HomePage> {
   Future<Comic> currentComic;
   Future<List<Widget>> randomComics;
   bool _isCurrentComicOnFavorites;
-  double _scale;
-  double _previousScale;
-  Offset _offset;
-  Offset _previousOffset;
   int randomId = 0;
   XkcdClient client;
   Db db;
@@ -37,9 +33,6 @@ class _HomePageState extends State<HomePage> {
     client = new XkcdClient();
     db = new Db();
     _isCurrentComicOnFavorites = false;
-    _scale = 1.0;
-    _previousScale = 1.0;
-    _offset = Offset.zero;
     currentComic = client.fetchLatestComic();
     randomComics = _renderRandomComics();
   }
