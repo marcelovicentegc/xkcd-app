@@ -7,6 +7,7 @@ import 'package:xkcd/utils/consts.dart';
 import 'package:xkcd/utils/random.dart';
 import 'package:xkcd/widgets/navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -21,6 +22,8 @@ class _HomePageState extends State<HomePage> {
   Future<Comic> currentComic;
   Future<List<Widget>> randomComics;
   bool _isCurrentComicOnFavorites = false;
+  double _scale = 1.0;
+  double _previousScale = 1.0;
   int randomId = 0;
   XkcdClient client;
   Db db;
@@ -313,8 +316,26 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
-                                  child: Image.network(
-                                    snapshot.data.img,
+                                  child: GestureDetector(
+                                    onScaleUpdate:
+                                        (ScaleUpdateDetails details) {
+                                      setState(() {
+                                        _scale = _previousScale + details.scale;
+                                      });
+                                    },
+                                    onScaleEnd: (ScaleEndDetails details) {
+                                      setState(() {
+                                        _previousScale = 1.0;
+                                      });
+                                    },
+                                    child: Transform(
+                                      alignment: FractionalOffset.center,
+                                      transform: Matrix4.diagonal3(
+                                          Vector3(_scale, _scale, _scale)),
+                                      child: Image.network(
+                                        snapshot.data.img,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
