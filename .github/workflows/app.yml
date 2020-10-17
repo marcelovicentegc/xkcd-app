@@ -18,8 +18,3 @@ jobs:
       - run: flutter upgrade
       - run: flutter pub get
       - run: flutter analyze .
-      - run: flutter build apk
-      - uses: actions/upload-artifact@v1
-        with:
-          name: release-apk
-          path: build/app/outputs/apk/release/app-release.apk

@@ -45,3 +45,4 @@ app.*.map.json
 
 # Android
 keystore.properties
+android/app/external/
