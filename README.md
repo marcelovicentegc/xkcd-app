@@ -1,3 +1,5 @@
+![.github/workflows/app.yml](https://github.com/marcelovicentegc/xkcd-app/workflows/.github/workflows/app.yml/badge.svg)
+
 <p align="center">
   <img alt="orangino logo" src="https://xkcd.com/s/0b7742.png" height="100" />
   <h3 align="center">xkcd app</h3>

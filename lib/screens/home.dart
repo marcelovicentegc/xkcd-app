@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/screens/favorites.dart';
+import 'package:xkcd/utils/consts.dart';
 import 'package:xkcd/utils/random.dart';
 import 'package:xkcd/widgets/navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -139,7 +140,7 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             new FlatButton(
-              child: new Text('Close'),
+              child: new Text(CLOSE),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -152,14 +153,14 @@ class _HomePageState extends State<HomePage> {
 
   Future<List<String>> _readFromFavorites() async {
     final prefs = await SharedPreferences.getInstance();
-    final key = 'favorites';
+    final key = FAVORITES;
     final value = prefs.getStringList(key) ?? [];
     return value;
   }
 
   void _saveToFavorites({id: int}) async {
     final prefs = await SharedPreferences.getInstance();
-    final key = 'favorites';
+    final key = FAVORITES;
     final value = prefs.getStringList(key) ?? [];
     value.add(id.toString());
     prefs.setStringList(key, value);
@@ -167,7 +168,7 @@ class _HomePageState extends State<HomePage> {
 
   void _removeFromFavorites({id: int}) async {
     final prefs = await SharedPreferences.getInstance();
-    final key = 'favorites';
+    final key = FAVORITES;
     final value = prefs.getStringList(key) ?? [];
     value.remove(id.toString());
     prefs.setStringList(key, value);
@@ -185,11 +186,10 @@ class _HomePageState extends State<HomePage> {
       _removeFromFavorites(id: comicId);
       snackBar = SnackBar(
           duration: const Duration(seconds: 1),
-          content: Text("Removed from favorites"));
+          content: Text(REMOVED_FROM_FAVS));
     } else {
       snackBar = SnackBar(
-          duration: const Duration(seconds: 1),
-          content: Text("Added on favorites"));
+          duration: const Duration(seconds: 1), content: Text(ADDED_ON_FAVS));
       _saveToFavorites(id: comicId);
     }
 
@@ -228,12 +228,11 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Expanded(
-                        child: Image.network("https://xkcd.com/s/0b7742.png"),
+                        child: Image.network(HOME_URL),
                       ),
                       Expanded(
                         child: Text(
-                          'A webcomic of romance, sarcasm, math, and language.'
-                              .toUpperCase(),
+                          TAGLINE.toUpperCase(),
                           textAlign: TextAlign.start,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
@@ -360,7 +359,7 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             padding: EdgeInsets.only(bottom: 8.0),
                             child: Text(
-                              'Some random comics',
+                              RANDOM_COMICS,
                               style: Theme.of(context).textTheme.headline6,
                             ),
                           ),
