@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:xkcd/api/db.dart';
 import 'package:xkcd/api/xkcd.dart';
 import 'package:xkcd/screens/favorites.dart';
 import 'package:xkcd/utils/consts.dart';
@@ -22,13 +23,14 @@ class _HomePageState extends State<HomePage> {
   bool _isCurrentComicOnFavorites = false;
   int randomId = 0;
   XkcdClient client;
+  Db db;
 
   @override
   void initState() {
     super.initState();
     client = new XkcdClient();
+    db = new Db();
     currentComic = client.fetchLatestComic();
-    _isCurrentComicOnFavorites = false;
     randomComics = _renderRandomComics();
   }
 
@@ -173,13 +175,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<List<String>> _readFromFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = FAVORITES;
-    final value = prefs.getStringList(key) ?? [];
-    return value;
-  }
-
   void _saveToFavorites({id: int}) async {
     final prefs = await SharedPreferences.getInstance();
     final key = FAVORITES;
@@ -197,7 +192,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<bool> _isSavedOnFavorites({comicId: int}) async {
-    final ids = await _readFromFavorites();
+    final ids = await db.readFromFavorites();
     return ids.any((id) => id == comicId.toString());
   }
 
@@ -236,7 +231,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SecondRoute()),
+                MaterialPageRoute(builder: (context) => FavoritesPage()),
               );
             },
           )
