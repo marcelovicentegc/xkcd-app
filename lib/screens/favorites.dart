@@ -73,40 +73,49 @@ class _FavoritesPageState extends State<FavoritesPage> {
             child: Align(
               alignment: Alignment.center,
               child: Column(
-                  children: isLoading
-                      ? [CircularProgressIndicator()]
-                      : favoriteComics
-                          .map(
-                            (favoriteComic) => Container(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: FlatButton(
-                                      padding: EdgeInsets.all(8.0),
-                                      onPressed: () => handleOnPressed(
-                                          comitToDisplay: favoriteComic),
-                                      child: Text(
-                                        favoriteComic.title,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6,
+                children: isLoading
+                    ? [CircularProgressIndicator()]
+                    : (favoriteComics.length == 0)
+                        ? [
+                            Container(
+                              child: Text(NO_FAVORITES,
+                                  style: Theme.of(context).textTheme.headline6),
+                            ),
+                          ]
+                        : favoriteComics
+                            .map(
+                              (favoriteComic) => Container(
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: FlatButton(
+                                        padding: EdgeInsets.all(8.0),
+                                        onPressed: () => handleOnPressed(
+                                            comitToDisplay: favoriteComic),
+                                        child: Text(
+                                          favoriteComic.title,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  displayComic &&
-                                          (currentComic.id == favoriteComic.id)
-                                      ? Container(
-                                          alignment: Alignment.center,
-                                          child:
-                                              Image.network(currentComic.img),
-                                        )
-                                      : Container()
-                                ],
+                                    displayComic &&
+                                            (currentComic.id ==
+                                                favoriteComic.id)
+                                        ? Container(
+                                            alignment: Alignment.center,
+                                            child:
+                                                Image.network(currentComic.img),
+                                          )
+                                        : Container()
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                          .toList()),
+                            )
+                            .toList(),
+              ),
             ),
           ),
         ),
