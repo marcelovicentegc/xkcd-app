@@ -16,54 +16,54 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  List<String> favoriteComicsIds = new List<String>();
-  List<Comic> favoriteComics = List<Comic>();
-  bool displayComic = false;
-  Comic currentComic;
-  XkcdClient client;
-  bool isLoading;
-  Db db;
+  List<String> _favoriteComicsIds = new List<String>();
+  List<Comic> _favoriteComics = List<Comic>();
+  bool _displayComic = false;
+  Comic _currentComic;
+  XkcdClient _client;
+  bool _isLoading;
+  Db _db;
 
   @override
   void initState() {
     super.initState();
-    db = new Db();
-    client = new XkcdClient();
+    _db = new Db();
+    _client = new XkcdClient();
     _getFavorites();
   }
 
   void _getFavorites() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
-    List<String> ids = await db.readFromFavorites();
+    List<String> ids = await _db.readFromFavorites();
     List<Comic> comics = List<Comic>();
 
-    comics = await Future.wait(ids.map((id) => client.fetchComic(id: id)));
+    comics = await Future.wait(ids.map((id) => _client.fetchComic(id: id)));
 
     setState(() {
-      favoriteComicsIds = ids;
-      favoriteComics = comics;
-      isLoading = false;
+      _favoriteComicsIds = ids;
+      _favoriteComics = comics;
+      _isLoading = false;
     });
   }
 
   void handleOnPressed({comitToDisplay: Comic}) {
-    if (currentComic == null || !(currentComic.id == comitToDisplay.id)) {
+    if (_currentComic == null || !(_currentComic.id == comitToDisplay.id)) {
       setState(() {
-        displayComic = true;
-        currentComic = comitToDisplay;
+        _displayComic = true;
+        _currentComic = comitToDisplay;
       });
     } else {
       setState(() {
-        displayComic = false;
-        currentComic = null;
+        _displayComic = false;
+        _currentComic = null;
       });
     }
   }
 
   void _handleOnPressedOk({id: String}) async {
-    db.removeFromFavorites(id: id);
+    _db.removeFromFavorites(id: id);
     _getFavorites();
   }
 
@@ -80,16 +80,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
             child: Align(
               alignment: Alignment.center,
               child: Column(
-                children: isLoading
+                children: _isLoading
                     ? [CircularProgressIndicator()]
-                    : (favoriteComics.length == 0)
+                    : (_favoriteComics.length == 0)
                         ? [
                             Container(
                               child: Text(NO_FAVORITES,
                                   style: Theme.of(context).textTheme.headline6),
                             ),
                           ]
-                        : favoriteComics
+                        : _favoriteComics
                             .map(
                               (favoriteComic) => Container(
                                 child: Column(
@@ -126,8 +126,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                         ),
                                       ],
                                     ),
-                                    displayComic &&
-                                            (currentComic.id ==
+                                    _displayComic &&
+                                            (_currentComic.id ==
                                                 favoriteComic.id)
                                         ? Container(
                                             alignment: Alignment.center,
@@ -136,8 +136,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                 onTap: () {
                                                   displayAltContent(
                                                       ctx: context,
-                                                      title: currentComic.title,
-                                                      alt: currentComic.alt);
+                                                      title:
+                                                          _currentComic.title,
+                                                      alt: _currentComic.alt);
                                                 },
                                                 child: Container(
                                                   // height: ,
@@ -145,7 +146,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                                   child: ZoomOverlay(
                                                     twoTouchOnly: true,
                                                     child: Image.network(
-                                                        currentComic.img),
+                                                        _currentComic.img),
                                                   ),
                                                 ),
                                               ),
