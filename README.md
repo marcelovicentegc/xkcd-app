@@ -7,3 +7,5 @@
 </p>
 
 ---
+
+![Play Store banner](./assets/playStoreBanner.png)
